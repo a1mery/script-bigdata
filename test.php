@@ -1,5 +1,13 @@
 
 <?php
+//Définition des paramètres de connexion
+$dbhost = 'localhost';
+$dbname = 'test';
+
+//Connexion à la base mongoDB
+$mongo = new Mong("mongodb://$dbhost");
+$db = $mongo->$dbname;
+
 // Création d'une nouvelle ressource cURL
 $ch = curl_init();
 $list = array( // Compléter la liste des villes necessaires (de préférence, la placer en dessous de code, que ça ne gène pas)
@@ -15,14 +23,18 @@ for ($i=0; $i < sizeof($list); $i++) {
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	// Récupération de l'URL et stockage de la variable en chaine de caractère
 $result = curl_exec($ch);
-$object = json_decode($result); //Transformation de la variable en objet JSON
-print_r($object);
+$object = json_decode($result, true); //Transformation de la variable en array
+print_r($object['coord']);
 
-// Deux possibilités -> enregistrer les infos sur mongoDB en php -> necessite de trouver comment manipuler JSON en php
-// -> sinon possbilité d'envoyer objet JSON en javascript et enregistrer sur mongoDB depuis js
+/*
+**
+** La connexion est faite, il ne reste plus qu'à enregistrer dans mongo les informations qui nous interessent !
+**
+*/
 
 
 }
+
 // Fermeture de la session cURL
 curl_close($ch);
 ?>
