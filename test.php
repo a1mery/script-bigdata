@@ -5,7 +5,7 @@ $dbhost = 'localhost';
 $dbname = 'test';
 
 //Connexion à la base mongoDB
-$mongo = new Mong("mongodb://$dbhost");
+$mongo = new Mongo("mongodb://$dbhost");
 $db = $mongo->$dbname;
 
 // Création d'une nouvelle ressource cURL
@@ -26,8 +26,13 @@ foreach ($list as $dept) {
 		// Récupération de l'URL et stockage de la variable en chaine de caractère
 		$result = curl_exec($ch);
 		$object = json_decode($result, true); //Transformation de la variable en array
-		print_r($object['weather']);
-		$departement = (array_keys($list,$dept)); // Récupération du dpt pour enregistrement sur mongo
+		$insert = array();
+		$insert['weather'] = $object['weather'];
+		$insert['ville'] = $ville;
+		$insert['departement'] = (array_keys($list,$dept)); // Récupération du dpt pour enregistrement sur mongo
+		$insert['main'] = $object['main'];
+		$insert['wind'] = $object['wind'];
+		print_r($insert);
 	 }
 
 /*
