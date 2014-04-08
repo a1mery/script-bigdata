@@ -3,9 +3,12 @@
 //Définition des paramètres de connexion
 $dbhost = 'localhost';
 $dbname = 'test';
+$endResult = array();
 
 //Connexion à la base mongoDB
 $mongo = new Mongo("mongodb://$dbhost");
+$connection = new MongoClient();
+$collection = $connection->database->$dbname;
 $db = $mongo->$dbname;
 
 // Création d'une nouvelle ressource cURL
@@ -28,11 +31,10 @@ foreach ($list as $dept) {
 		$object = json_decode($result, true); //Transformation de la variable en array
 		$insert = array();
 		$insert['weather'] = $object['weather'];
-		$insert['ville'] = $ville;
-		$insert['departement'] = (array_keys($list,$dept)); // Récupération du dpt pour enregistrement sur mongo
-		$insert['main'] = $object['main'];
-		$insert['wind'] = $object['wind'];
-		print_r($insert);
+		$endResult[$ville] = array();
+		$endResult[$ville]['departement'] = (array_keys($list,$dept)); // Récupération du dpt pour enregistrement sur mongo
+		$endResult[$ville]['main'] = $object['main'];
+		$endResult[$ville]['wind'] = $object['wind'];
 	 }
 
 /*
@@ -41,11 +43,10 @@ foreach ($list as $dept) {
 **
 */
 }
+$collection->insert($endResult);
 
 // Fermeture de la session cURL
 curl_close($ch);
-
-generateList();
 
 function generateList() {
 	$fp = fopen("Departements/liste.txt", "r");
