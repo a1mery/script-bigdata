@@ -26,7 +26,8 @@ foreach ($list as $dept) {
 		// Récupération de l'URL et stockage de la variable en chaine de caractère
 		$result = curl_exec($ch);
 		$object = json_decode($result, true); //Transformation de la variable en array
-		print_r($object);
+		print_r($object['weather']);
+		$departement = (array_keys($list,$dept)); // Récupération du dpt pour enregistrement sur mongo
 	 }
 
 /*
