@@ -21,8 +21,9 @@ foreach ($list as $dept) {
 	print_r(array_keys($list,$dept)[0]);
 
 	foreach ($dept as $ville) {
-		print_r($ville);
-		curl_setopt($ch, CURLOPT_URL, "http://api.openweathermap.org/data/2.5/weather?q=".$ville.",fr");
+		$villeName = explode("\r",$ville)[0];
+		echo($ville);
+		curl_setopt($ch, CURLOPT_URL, "http://api.openweathermap.org/data/2.5/weather?q=".$villeName.",fr");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 
@@ -32,17 +33,14 @@ foreach ($list as $dept) {
 			$result = curl_exec($ch);
 			$object = json_decode($result, true); //Transformation de la variable en array
 			$insert = array();
-			$villeName = explode("\r",$ville)[0];
 			if($object != null) {
-				if(array_key_exists('weather', $object)) {
-					$insert['ville'] = $villeName;
-					$insert['dpt'] = array_keys($list,$dept)[0];
-					$insert['time'] = time();
-					$insert['weather'] = $object['weather'];
-					$insert['main'] = $object['main'];
-					$insert['wind'] = $object['wind'];
-					$collection->insert($insert);
-				}
+				$insert['ville'] = $villeName;
+				$insert['dpt'] = array_keys($list,$dept)[0];
+				$insert['time'] = time();
+				$insert['weather'] = $object['weather'];
+				$insert['main'] = $object['main'];
+				$insert['wind'] = $object['wind'];
+				$collection->insert($insert);
 			}
 
 
